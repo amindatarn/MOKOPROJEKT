@@ -1,10 +1,6 @@
+import xml.etree.ElementTree as ET
 
-
-def createxml():
-    indata1 = ("modulnumer")
-    indata2 = ("columns")
-    import xml.etree.ElementTree as ET
-
+def createxmlmall():
     # build a tree structure
     root = ET.Element("state")
 
@@ -17,25 +13,51 @@ def createxml():
     application.text = ("SIBS Configurator")
 
     safecookie = ET.SubElement(root, "safecookie")
-    safestep = ET.SubElement(safecookie, "safecookie", name= "Project Inormation")
-    safestep = ET.SubElement(safecookie, "Project Information", attr="007")
 
-    commits = ET.SubElement(safestep, "commits")
+    safestep1 = ET.SubElement(safecookie, "safe-step", name= "Project Information")
+    safestep2 = ET.SubElement(safecookie, "safe-step", name="Indata")
 
-    commitedname02 = ET.SubElement(commits, "committed name", name="Module_Type", number="VA")
+    commits1 = ET.SubElement(safestep1, "commits")
+    commits2 = ET.SubElement(safestep2, "commits")
+
+    getdatafromexcel(commits1,commits2)
+
+    steps = ET.SubElement(root, "steps")
+    prev = ET.SubElement(steps, "prev")
+    step = ET.SubElement(prev, "step").text =("Project Information")
+
+    current = ET.SubElement(steps, "current").text=("Indata")
+    next = ET.SubElement(steps, "next")
+
+    lastproxy = ET.SubElement(root, "last-proxy").text="tcserver0"
+
 
     tree = ET.ElementTree(root)  # sparar hela trädet i variabeln tree
     savexml(tree)
 
-""" commitedname03 = ET.SubElement(commits, "committed name", name="Module_number", number=indata1)
-commitedname04 = ET.SubElement(commits, "committed name", name="Ritad_Av", number="AMINDA TÄRN")
-commitedname05 = ET.SubElement(commits, "committed name", name="Uppdragsansvarig", number="PATRIK JENSEN")
-commitedname06 = ET.SubElement(commits, "committed name", name="Status", number="FOR PRUDUCTION")
-commitedname07 = ET.SubElement(commits, "committed name", name="Datum", date="0097")
-commitedname08 = ET.SubElement(commits, "committed name", name="Regulations", number="0097")
-commitedname09 = ET.SubElement(commits, "committed name", name="Columns", number=indata2)
-commitedname10 = ET.SubElement(commits, "committed name", name="Project_number", number="0097")"""
+def getdatafromexcel(commits1, commits2): #lägger in varibler
+    indatatillxml(commits1, "Project_number","007")
+    indatatillxml(commits1, "Module_Type","VA")
+    indatatillxml(commits1, "Module_number","001")
+    indatatillxml(commits1, "Ritad_Av", "AMINDA TÄRN")
+    indatatillxml(commits1, "Uppdragsansvarig","PATRIK JENSEN")
+    indatatillxml(commits1, "Status", "FOR PRODUCTION")
+    indatatillxml(commits1, "Datum", "2020-09-11")
+    indatatillxml(commits1, "Regulations", "001001")
+    indatatillxml(commits1, "Columns", "8P")
+    indatatillxml(commits1, "Stiffener", "RS")
+    indatatillxml(commits1, "X1", "1800")
+    indatatillxml(commits1, "Y1", "3000")
+    indatatillxml(commits1, "Y2", "7000")
+    indatatillxml(commits1, "Y3", "8900")
+    indatatillxml(commits1, "Z1", "2900")
 
+    indatatillxml(commits2, "Wall_Number", "5")
+    indatatillxml(commits2, "Wall_Setup", "S")
+
+
+def indatatillxml(commit ,variabel1,variabel2): #skapar alla attribut för commits1
+    ET.SubElement(commit, "committed", name=variabel1).text = variabel2
 
 def savexml(tree):
     import os
@@ -48,11 +70,11 @@ def savexml(tree):
             mappnamn = mappnamn + str(n)
             os.mkdir(mappnamn)  # Namnet på ny mapp
             os.chdir(r"C:\Users\AmindaTärn\Desktop\Python\xmlfiler\\" + mappnamn)
-            tree.write("nyfil.xml")  # Namnet på ny fil
+            tree.write("nyfil.xml", encoding = "UTF-8")  # Namnet på ny fil
             break
         except:
             print("ehj")
             n = int(n) + 1
             print(n)
 
-createxml()
+createxmlmall()
