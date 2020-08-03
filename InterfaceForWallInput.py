@@ -1,4 +1,4 @@
-import Skapaxml
+import WallLoops
 from tkinter import *
 from tkinter import Tk,filedialog,font
 
@@ -17,11 +17,11 @@ startConfiguration = Frame(frame2)
 def setText():
     Projekt_number = entry1.get()
     Ritad_Av = entry2.get()
-    Uppdragsansvarig = entry3.get()
-    Status = entry4.get()
+    Uppdragsansvarig = "PATRIK JENSEN"
+    Status = "FOR PRODUCTION"
     Datum = entry5.get()
-    Regulations = entry6.get()
-    Skapaxml.gothroughexcel(Projekt_number, Ritad_Av, Uppdragsansvarig, Status, Datum, Regulations, foldername)
+    Regulations = "001001"
+    WallLoops.OuterWalls(Projekt_number, Ritad_Av, Uppdragsansvarig, Status, Datum, Regulations, foldername, exceldokument)
     exit()
 
 def fileDialog():
@@ -52,6 +52,11 @@ def createButton(master, text, command):
     button.pack()
 
 
+def browseForFile():
+    global exceldokument
+    exceldokument = filedialog.askopenfilename()
+
+
 labelFrame.configure(bg="#FFFFFF")
 entryFrame.configure(bg="#FFFFFF")
 
@@ -76,6 +81,13 @@ entry6 = createEntry(entryFrame, "001001")
 createLabel(labelFrame, "Spara filer som:")
 createButton(entryFrame, "Browse", fileDialog)
 
+createLabel(labelFrame, "använd denna excelfil")
+createButton(entryFrame, "Browse", browseForFile)
+
+def browseForFile():
+    global exceldokument
+    exceldokument = filedialog.askopenfilename()
+
 frame1.pack()
 frame2.pack()
 labelFrame.pack(side=LEFT, fill=BOTH)
@@ -83,6 +95,3 @@ entryFrame.pack(side=LEFT, fill=BOTH)
 startConfiguration.pack(side=BOTTOM)
 
 window.mainloop()
-
-print("HEj")
-
