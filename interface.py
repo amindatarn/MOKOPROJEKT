@@ -20,7 +20,7 @@ class Window(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, PageOne, PageTwo, PageThree, PageFour):
+        for F in (StartPage, PageOne, PageTwo, PageThree, PageFour, PageFive, PageSix):
 
             frame = F(container,self)
 
@@ -60,6 +60,9 @@ class Window(tk.Tk):
         elif conf == "facade":
             print("facade")
             WallLoops.FasadWalls(Uppdragsansvarig, Status, Datum, Regulations, foldername, exceldokument)
+        elif conf == "balcony":
+            print("balcony")
+            WallLoops.Balcony(Uppdragsansvarig, Status, Datum, Regulations, foldername, exceldokument)
         else:
             print("fel")
 
@@ -69,23 +72,27 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self,parent)
 
 
-        label = tk.Label(self, text = "Wallconfigurator", font = LARGE_FONT)
+        label = tk.Label(self, text = "MOKO Modulconfigurator", font = LARGE_FONT)
         label.pack(pady = 10, padx = 10)
 
-        label = tk.Label(self, text="Välj den typ av vägg du vill konfigurera:")
+        label = tk.Label(self, text="Välj den typ du vill konfigurera:")
         label.pack(pady=10, padx=10)
 
-        img = tk.PhotoImage(file = r"C:\Users\AmindaTärn\Desktop\Python\Python program\Namnlös.png")
-        button = tk.Button(self, image = img,  width="100", height="25",
+        button = tk.Button(self, text="OuterWall Configurator",
                             command = lambda: controller.show_frame(PageOne))
 
-        button.image =img
+
         button.pack(pady=10, padx=10)
 
         button2 = tk.Button(self, text="Facadewall Configurator",
                            command=lambda: controller.show_frame(PageThree))
 
         button2.pack(pady=10, padx=10)
+
+        button3 = tk.Button(self, text="Balcony Configurator",
+                            command=lambda: controller.show_frame(PageFive))
+
+        button3.pack(pady=10, padx=10)
 
 class PageOne(tk.Frame):
 
@@ -230,6 +237,83 @@ class PageFour(tk.Frame):
 
         button3 = tk.Button(self, text="Start Configurator",
                              command=lambda: controller.StartOuterwallConfig(entry1, "facade"))
+        button3.grid(column=2, row=2,padx= 10, pady=10, ipadx = 30,ipady = 10)
+
+        button2 = tk.Button(self, text="Back to facadewallconfigurator",
+                             command=lambda: controller.show_frame(PageThree))
+        button2.grid(column=1, row=4, padx= 10, sticky = tk.W+ tk.S)
+
+        button1 = tk.Button(self, text="Back to wall configurator",
+                             command=lambda: controller.show_frame(StartPage))
+        button1.grid(column=0, row=4,padx= 10, sticky = tk.W+ tk.S)
+
+class PageFive(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        label = tk.Label(self, text="Balcony configurator", font=LARGE_FONT)
+        label.grid(column=1, row=0, padx= 10, pady=10)
+
+        label1 = tk.Label(self, text="Välj den excelfil du vill hämta datan från :")
+        label1.grid(column=0, row=1, padx= 10, pady=10, sticky = tk.W)
+
+        file1 = tk.StringVar()
+        entry1 = tk.Entry(self, textvariable=file1)
+        entry1.grid(column=1, row=1, pady=10,ipadx =140)
+
+        button3 = tk.Button(self, text="Browse..." ,
+                             command = lambda: controller.entry_set_excel(entry1))
+        button3.grid(column=2, row=1, padx= 10, pady=10)
+
+        label2 = tk.Label(self, text="Välj vart du vill spara dina filer :")
+        label2.grid(column=0, row=2, padx= 10, pady=10, sticky = tk.W)
+
+        file2 = tk.StringVar()
+        entry2 = tk.Entry(self, textvariable=file2)
+        entry2.grid(column=1, row=2, pady=10, ipadx = 140)
+
+        button3 = tk.Button(self, text="Browse...",
+                            command=lambda: controller.entry_set_folder(entry2))
+        button3.grid(column=2, row=2, padx= 10, pady=10)
+
+        button2 = tk.Button(self, text="Next",
+                             command=lambda: self.checkEntry(controller, file1, file2))
+
+        button2.grid(column=3, row=3, padx=10, pady=10, sticky=tk.E)
+
+        button1 = tk.Button(self, text="Back to startpage",
+                           command=lambda: controller.show_frame(StartPage))
+
+        button1.grid(column=0, row=3, sticky = tk.W+tk.E, padx= 10, pady=10)
+
+    def checkEntry(self, controller, file1, file2):
+        if file1.get() == "" or file2.get() == "":
+            print("empty")
+            messagebox.showerror("Error", "Du måste fylla i båda fälten" )
+        else:
+            controller.show_frame(PageSix)
+
+class PageSix(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        tk.Frame.__init__(self, parent)
+
+        label = tk.Label(self, text=" Balcony configurator", font=LARGE_FONT)
+        label.grid(column=2, row=0, padx= 10, pady=10)
+
+        label1 = tk.Label(self, text="Välj datum :")
+        label1.grid(column=1, row=1, pady=10, sticky = tk.E)
+
+        file1 = tk.StringVar()
+        entry1 = tk.Entry(self, textvariable=file1)
+        entry1.delete(0, tk.END)
+        entry1.insert(0, "2020-09-11")
+        entry1.grid(column=2, row=1,padx= 10, pady=10)
+
+        button3 = tk.Button(self, text="Start Configurator",
+                             command=lambda: controller.StartOuterwallConfig(entry1, "balcony"))
         button3.grid(column=2, row=2,padx= 10, pady=10, ipadx = 30,ipady = 10)
 
         button2 = tk.Button(self, text="Back to facadewallconfigurator",

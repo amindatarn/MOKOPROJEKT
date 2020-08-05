@@ -16,7 +16,7 @@ def FasadWalls(Uppdragsansvarig, Status, Datum, Regulations,foldername, exceldok
             tree, commits1, safecookie, steps, prev = Skapaxml.createxmlmall(username,Uppdragsansvarig, Status, Datum, Regulations,projectNumber)
             commits2 = Skapaxml.createxmlmallejdefault(i, safecookie, steps, prev)
             filnamn = Skapaxml.facadeWallsCommits(i, commits2)
-            Skapaxml.savexml(tree, filnamn + ".xml", foldername)
+            Skapaxml.savexml(tree, filnamn + ".tcs", foldername)
         else:
             print("FEL")
             pass
@@ -50,6 +50,25 @@ def OuterWalls(Uppdragsansvarig, Status, Datum, Regulations, foldername, exceldo
                 k += 1
                 x += 1
         else:
+            pass
+        i += 1
+
+    quit()
+
+def Balcony(Uppdragsansvarig, Status, Datum, Regulations,foldername, exceldokument):
+
+    sheet = Skapaxml.getExcel(exceldokument)
+    i = 1
+    while i < (sheet.nrows):
+        if i >1 and len(sheet.cell_value(i, 1)) > 0:
+            projectNumber = str(sheet.cell_value(i, 1))[0:3]
+            tree, commits1, safecookie, steps, prev = Skapaxml.createxmlmall(username,Uppdragsansvarig, Status, Datum, Regulations,projectNumber)
+            commits2 = Skapaxml.createxmlmallejdefault(i, safecookie, steps, prev)
+            filnamn = Skapaxml.BalconyCommits(i, commits2)
+            Skapaxml.savexml(tree, filnamn + ".xml", foldername)
+            Skapaxml.savexml(tree, filnamn + ".tcs", foldername)
+        else:
+            print("FEL")
             pass
         i += 1
 

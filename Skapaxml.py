@@ -207,13 +207,170 @@ def facadeWallsCommits(i, commits2):
     addSubWithNameAndText("committed", "Module_number", modulenumber[5:8])
     Commit2("Length", makeinputstring( i, 2)).addtoxml(commits2)
     Commit2("Offset",makeinputstring( i, 3)).addtoxml(commits2)
-    #Commit2("Floor", str(sheet.cell_value(i, 4))).addtoxml(commits2)
+    Commit2("Floor", checkFloor(i)).addtoxml(commits2)
 
     #Commit2("Facade Material", "Stående Träpanel").addtoxml(commits2)
 
     wallSetupFacade(i, (sheet.cell_value(i, 5)).lower(), commits2)
 
     return filnamn
+
+def BalconyCommits(i, commits2):
+
+    filnamn = (sheet.cell_value(i, 1)[0:8])
+
+    modulenumber = str(sheet.cell_value(i, 1))
+
+    addSubWithNameAndText("committed", "Module_Type", modulenumber[3:5])
+    addSubWithNameAndText("committed", "Module_number", modulenumber[5:8])
+
+
+    Commit2("Length", makeinputstring( i, 2)).addtoxml(commits2)
+    Commit2("Depth",makeinputstring( i, 3)).addtoxml(commits2)
+    Commit2("Height", "2900").addtoxml(commits2)
+    Commit2("Tension_rod", checkTension(i)).addtoxml(commits2)
+    Commit2("CornerAB", checkCornerAB(i)).addtoxml(commits2)
+    Commit2("CornerBC", checkCornerBC(i)).addtoxml(commits2)
+    Commit2("CornerCD", checkCornerCD(i)).addtoxml(commits2)
+    Commit2("CornerAD", checkCornerDA(i)).addtoxml(commits2)
+
+    SideInput(i, "A", commits2)
+    SideInput(i, "B", commits2)
+    SideInput(i, "C", commits2)
+    SideInput(i, "D", commits2)
+    rail(i, commits2)
+
+    return filnamn
+
+def rail(i,commits2):
+    if (sheet.cell_value(i, 30)).lower() == "a":
+        Commit2("Rail_SideA_Length", makeinputstring(i, 32)).addtoxml(commits2)
+        Commit2("Offset_SideA", makeinputstring(i, 31)).addtoxml(commits2)
+        Commit2("Rail_SideB", "No").addtoxml(commits2)
+        Commit2("Rail_SideC", "No").addtoxml(commits2)
+        Commit2("Rail_SideD", "No").addtoxml(commits2)
+
+    elif (sheet.cell_value(i, 30)).lower() == "b":
+        Commit2("Rail_SideB_Length", makeinputstring(i, 32)).addtoxml(commits2)
+        Commit2("Offset_SideB", makeinputstring(i, 31)).addtoxml(commits2)
+        Commit2("Rail_SideA", "No").addtoxml(commits2)
+        Commit2("Rail_SideC", "No").addtoxml(commits2)
+        Commit2("Rail_SideD", "No").addtoxml(commits2)
+
+    elif (sheet.cell_value(i, 30)).lower() == "c":
+        Commit2("Rail_SideC_Length", makeinputstringe(i, 32)).addtoxml(commits2)
+        Commit2("Offset_SideC", makeinputstring(i, 31)).addtoxml(commits2)
+        Commit2("Rail_SideB", "No").addtoxml(commits2)
+        Commit2("Rail_SideA", "No").addtoxml(commits2)
+        Commit2("Rail_SideD", "No").addtoxml(commits2)
+
+    elif (sheet.cell_value(i, 30)).lower() == "d":
+        Commit2("Rail_SideD_Length", sheet.cell_value(i, 32)).addtoxml(commits2)
+        Commit2("Offset_SideD", sheet.cell_value(i, 31)).addtoxml(commits2)
+        Commit2("Rail_SideB", "No").addtoxml(commits2)
+        Commit2("Rail_SideC", "No").addtoxml(commits2)
+        Commit2("Rail_SideA", "No").addtoxml(commits2)
+
+    else:
+        Commit2("Rail_SideA", "No").addtoxml(commits2)
+        Commit2("Rail_SideB", "No").addtoxml(commits2)
+        Commit2("Rail_SideC", "No").addtoxml(commits2)
+        Commit2("Rail_SideD", "No").addtoxml(commits2)
+
+
+def SideInput(i,side,commits2):
+    if side == "A":
+        n = 9
+        k = 10
+        j = 11
+    elif side == "B":
+        n = 15
+        k = 16
+        j = 17
+
+    elif side == "C":
+        n = 21
+        k = 22
+        j = 23
+
+    elif side == "D":
+        n = 27
+        k = 28
+        j = 29
+
+    Commit2("Water Proofing Plates Side " + str(side), WaterProof(i,n)).addtoxml(commits2)
+    Commit2("Facade_plate_Side_" + str(side) + "_Length" , makeinputstring(i, j)).addtoxml(commits2)
+    Commit2("Offset_FP_Side" + str(side), makeinputstring(i, k)).addtoxml(commits2)
+
+
+def WaterProof(i,n):
+    if (sheet.cell_value(i, n)).lower() == "drip":
+        return "WPQ1"
+
+    elif (sheet.cell_value(i, n)).lower() == "side":
+        return "WPQ2"
+
+    elif (sheet.cell_value(i, n)).lower() == "facade":
+        return "WPQ3"
+
+def checkCornerAB(i):
+    x = (sheet.cell_value(i, 5)).lower()
+    if x == "a":
+        return "CAB1"
+    elif x == "b":
+        return "CAB2"
+    else:
+        print("fel i corner AB")
+
+def checkCornerBC(i):
+    x = (sheet.cell_value(i, 6)).lower()
+    if x == "b":
+        return "CBC1"
+    elif x == "c":
+        return "CBC2"
+    elif x == "-":
+        return "CBC4"
+    else:
+        print("fel i corner BC")
+
+def checkCornerCD(i):
+    x = (sheet.cell_value(i, 7)).lower()
+    if x == "c":
+        return "CCD1"
+    elif x == "d":
+        return "CCD2"
+    elif x == "-":
+        return "CCD4"
+    else:
+        print("fel i corner CD")
+def checkCornerDA(i):
+    x = (sheet.cell_value(i, 8)).lower()
+    if x == "d":
+        return "CAD1"
+    elif x == "a":
+        return "CAD2"
+    else:
+        print("fel i corner DA")
+
+def checkTension(i):
+    x = (sheet.cell_value(i, 4)).lower()
+    if x == "yes":
+        return "TR4"
+    elif x == "no":
+        return "TR1"
+    else:
+        print("Fel i tensionrod")
+
+
+def checkFloor(i):
+    x = (sheet.cell_value(i, 4)).lower()
+    if x == "yes":
+        return "Floor 1"
+    elif x== "no":
+        return "Floor>1"
+    else:
+        print("Fel i tätskicktsanslutning")
+
 
 def wallSetupFacade(i,s, commits2):
     if s == "straight":
