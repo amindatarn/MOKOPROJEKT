@@ -47,13 +47,12 @@ def createxmlmall(Ritad_Av, Uppdragsansvarig, Status, Datum, Regulations,project
     tree = ET.ElementTree(root)                                     # saves tree in variable "tree"
     return tree, commits1, safecookie, steps, prev
 
-def createxmlmalldefault(steps,prev):
+def createxmlmalldefault(steps):
     """adds subElements to defaultxml"""
 
     current = ET.SubElement(steps, "current").text = ("Project Information")
     next = ET.SubElement(steps, "next")
     step = ET.SubElement(next, "step").text = ("Indata")
-
 
 def createxmlmallejdefault(i,safecookie,steps,prev):
     """adds subElements to the uniqe walls"""
@@ -64,7 +63,6 @@ def createxmlmallejdefault(i,safecookie,steps,prev):
     current = ET.SubElement(steps, "current").text = ("Indata")
     next = ET.SubElement(steps, "next")
 
-
     return commits2                                                     # returns commits2 where all the uniqe wall information adds
 
 def addSubWithNameAndText(motherElementText, subElementName, subElementText): #skapar alla attribut för commits1
@@ -72,19 +70,10 @@ def addSubWithNameAndText(motherElementText, subElementName, subElementText): #s
 
 def addSubWithNameAndTextCommit2(motherElement, motherElementText, subElementName, subElementText): #skapar alla attribut för commits1
     ET.SubElement(motherElement, motherElementText, name=subElementName).text = subElementText
-def addSub(motherElement, motherElementText):
-    ET.SubElement(motherElement, motherElementText)
-def addSubWithName(motherElement, motherElementText, subElementName):
-    ET.SubElement(motherElement, motherElementText, name=subElementName)
-
-def addSubWithText(motherElementText, subElementText):
-    ET.SubElement(commits1, motherElementText).text = subElementText
-
 
 def savexml(tree,filnamn,foldername):
     """Creates a folder and saves xml tree in a specific path"""
     import os             # ändrar plats för filer
-
 
     os.chdir(foldername)
     tree.write(filnamn)  # Namnet på ny fil
@@ -93,7 +82,6 @@ def savexml(tree,filnamn,foldername):
        # os.mkdir(r"C:\Users\AmindaTärn\Desktop\Python\xmlfiler\\" + foldername)                                                      # Namnet på ny mapp
        ## os.chdir(r"C:\Users\AmindaTärn\Desktop\Python\xmlfiler\\" + foldername)
        # tree.write(filnamn)                                                     # Namnet på ny fil
-
 
 #EXCEL
 def makeinputstring(i, f):
@@ -115,6 +103,33 @@ def formatStiffener(stiffener):
         return "LS"
     else:
         return "NS"
+def innerWalls(i,commits2):
+    modulenumber = sheet.cell_value(i, 0)
+
+    addSubWithNameAndText("committed", "Module_number", modulenumber[5:])  # adds modulnumer
+    addSubWithNameAndText("committed", "Module_Type", modulenumber[3:5])  # adds modultypen
+
+    Commit2("Wall_Number",sheet.cell_value(i, 1)[4:]).addtoxml(commits2)
+    Commit2("Length", makeinputstring(i, 4)).addtoxml(commits2)
+
+    Commit2("Fire_Gypsum", sheet.cell_value(i, 1)).addtoxml(commits2)
+
+    s = sheet.cell_value(i, 2).lower()
+
+    if s =="straight":
+        Commit2("Wall_Setup", "S").addtoxml(commits2)
+
+    elif s == "door":
+        makedoorInner(i, 5, 6, commits2, "Door_Type","X_Door")
+
+    elif s == "door and door":
+        makedoorInner(i, 5, 6, commits2, "Door_Type", "X_Door")
+        makedoorInner(i, 7, 8, commits2, "Door2_Type", "X_Door2")
+
+    filnamn = modulenumber.zfill(3) + "_"
+
+    return filnamn
+
 
 def outerWallsCommit1(i): #läser raderna i vald excelfil
     """creates and adds all the information in first commit,different for every module"""
@@ -276,7 +291,6 @@ def rail(i,commits2):
         Commit2("Rail_SideB", "No").addtoxml(commits2)
         Commit2("Rail_SideC", "No").addtoxml(commits2)
         Commit2("Rail_SideD", "No").addtoxml(commits2)
-
 
 def SideInput(i,side,commits2):
     if side == "A":
@@ -480,6 +494,12 @@ def makeadoor(i,a,b,c, commits2, doortype, xdoor, doorserup):
     Commit2(doortype, ("D_" + avrundadstrl)).addtoxml(commits2)
     Commit2(xdoor, makeinputstring(i,b)).addtoxml(commits2)
     Commit2(doorserup, str(doorsetup(i, c))).addtoxml(commits2)
+
+def makedoorInner(i,a,b, commits2, doortype, xdoor):
+    avrundadstrl = windowanddoorsize(sheet.cell_value(i, a))
+    Commit2(doortype, ("D_" + avrundadstrl)).addtoxml(commits2)
+    Commit2(xdoor, makeinputstring(i, b)).addtoxml(commits2)
+
 
 def makewindow(i,a,b,c,commits2,windowtype,xwindow,windowsill):
     """put values into the variebles winfow - size,type and sill"""
