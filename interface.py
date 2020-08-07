@@ -1,8 +1,6 @@
 
 import tkinter as tk
-from tkinter import filedialog, font
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import filedialog,messagebox,ttk
 import WallLoops
 
 LARGE_FONT = ("Verdana", 12)
@@ -78,7 +76,7 @@ class StartPage(tk.Frame):
         label = tk.Label(self, text="Välj den typ du vill konfigurera:")
         label.pack(pady=10, padx=10)
 
-        button = tk.Button(self, text="OuterWall Configurator",
+        button = ttk.Button(self, text="OuterWall Configurator",
                             command = lambda: controller.show_frame(PageOne))
 
 
