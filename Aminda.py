@@ -5,6 +5,7 @@ from PIL import ImageTk, Image
 import getpass
 import xml.etree.ElementTree as ET
 import xlrd
+from pathlib import Path
 
 
 def resource_path(relative_path):
@@ -292,15 +293,30 @@ class StartPage(tk.Frame):
 
         tk.Frame.__init__(self, parent)
         colour = "white"
+
+
+
+        dir_path = Path('C:\Temp')
+        file_name = 'indata.txt'
+
+        # check if directory exists
+
         try:
             f = open("indata.txt", "r")
             file_lines = f.readlines()
             f.close()
         except:
-            f = open("indata.txt", "w")
-            for i in ("B", "2020-02-20", "AMINDA TÄRN", "PATRIK JENSEN", "FOR PRODUCTION", "001001"):
-                f.write(i+"\n")
-            f.close()
+            if my_path.is_dir():
+                f = open(dir_path.joinpath(file_name), 'w')
+                print('File created')
+                for i in ("B", "2020-02-20", "AMINDA TÄRN", "PATRIK JENSEN", "FOR PRODUCTION", "001001"):
+                    f.write(i + "\n")
+                f.close()
+            else:
+                print('Directory doesn texist')
+            #f = open("indata.txt", "w")
+
+
         f = open("indata.txt", "r")
         file_lines = f.readlines()
 
@@ -446,12 +462,15 @@ class StartPage(tk.Frame):
             return "Error"
 
     def write_to_indata(self, entries):
-        f = open("indata.txt", "w")
-        text_list = []
-        for x in range(2, len(entries)):
-            text_list.append(str(entries[x].get()) + "\n")
-        f.writelines(text_list)
-        f.close()
+        try:
+            f = open("indata.txt", "w")
+            text_list = []
+            for x in range(2, len(entries)):
+                text_list.append(str(entries[x].get()) + "\n")
+            f.writelines(text_list)
+            f.close()
+        except:
+            pass
 
     def check_entry(self, controller, entries, list_of_project_info, error_label):
         """Contoll of inputs and try/except for mainloop"""
